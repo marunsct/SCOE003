@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+        <edmx:Include Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="CodeList"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="Measures"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://s4.dev:443/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="cds_zz_sd_00_plnsprmc" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <EntityType Name="ZZ_CV_00_PLNSPRMCType" sap:label="Consumption view for Upload/Download" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Company_Code"/>
+                    <PropertyRef Name="Plant"/>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="type"/>
+                    <PropertyRef Name="flag"/>
+                    <PropertyRef Name="vendor"/>
+                    <PropertyRef Name="plan_date"/>
+                    <PropertyRef Name="fiscal_year"/>
+                    <PropertyRef Name="fiscal_period"/>
+                </Key>
+                <Property Name="Delete_mc" Type="Edm.Boolean" sap:label="Dyn. Method Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Update_mc" Type="Edm.Boolean" sap:label="Dyn. Method Control" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Company_Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Company Code" sap:updatable="false"/>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Plant" sap:updatable="false"/>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:display-format="UpperCase" sap:label="Material" sap:quickinfo="Material Number" sap:updatable="false"/>
+                <Property Name="type" Type="Edm.String" Nullable="false" MaxLength="22" sap:display-format="UpperCase" sap:label="Type" sap:updatable="false"/>
+                <Property Name="flag" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase" sap:label="Flag" sap:updatable="false"/>
+                <Property Name="vendor" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:label="Vendor" sap:quickinfo="Account Number of Supplier" sap:updatable="false"/>
+                <Property Name="plan_date" Type="Edm.DateTime" Nullable="false" Precision="0" sap:display-format="Date" sap:label="plan_date" sap:quickinfo="Plan Date" sap:updatable="false"/>
+                <Property Name="fiscal_year" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="NonNegative" sap:label="Fiscal Year" sap:updatable="false"/>
+                <Property Name="fiscal_period" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="NonNegative" sap:label="fiscal Period" sap:quickinfo="Fiscal period" sap:updatable="false"/>
+                <Property Name="Period0" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period0"/>
+                <Property Name="Period1" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period1"/>
+                <Property Name="Period2" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period2"/>
+                <Property Name="Period3" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period3"/>
+                <Property Name="Period4" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period4"/>
+                <Property Name="Period5" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period5"/>
+                <Property Name="Period6" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period6"/>
+                <Property Name="Period7" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period7"/>
+                <Property Name="Period8" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period8"/>
+                <Property Name="Period9" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period9"/>
+                <Property Name="Period10" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period10"/>
+                <Property Name="Period11" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period11"/>
+                <Property Name="Period12" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period12"/>
+                <Property Name="Period13" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period12" sap:quickinfo="Period13"/>
+                <Property Name="Period14" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period14"/>
+                <Property Name="Period15" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period15"/>
+                <Property Name="Period16" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period16"/>
+                <Property Name="Period17" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period17"/>
+                <Property Name="Period18" Type="Edm.Decimal" Precision="22" Scale="0" sap:label="Period18"/>
+                <Property Name="Update_Reason" Type="Edm.String" MaxLength="200" sap:display-format="UpperCase" sap:label="Update_Reason" sap:quickinfo="Update Reason"/>
+                <Property Name="ExcelRowNumber" Type="Edm.Byte"/>
+            </EntityType>
+            <EntityType Name="SAP__Currency" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="CurrencyCode"/>
+                </Key>
+                <Property Name="CurrencyCode" Type="Edm.String" Nullable="false" MaxLength="5" sap:label="Currency" sap:semantics="currency-code"/>
+                <Property Name="ISOCode" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="ISO code"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="15" sap:label="Short text"/>
+                <Property Name="DecimalPlaces" Type="Edm.Byte" Nullable="false" sap:label="Decimals"/>
+            </EntityType>
+            <EntityType Name="SAP__UnitOfMeasure" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="UnitCode"/>
+                </Key>
+                <Property Name="UnitCode" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Internal UoM" sap:semantics="unit-of-measure"/>
+                <Property Name="ISOCode" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="ISO code"/>
+                <Property Name="ExternalCode" Type="Edm.String" Nullable="false" MaxLength="3" sap:label="Commercial"/>
+                <Property Name="Text" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="Measurement Unit Txt"/>
+                <Property Name="DecimalPlaces" Type="Edm.Int16" sap:label="Decimal Places"/>
+            </EntityType>
+            <EntityContainer Name="cds_zz_sd_00_plnsprmc_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="ZZ_CV_00_PLNSPRMC" EntityType="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType" sap:searchable="true" sap:content-version="1" sap:deletable-path="Delete_mc" sap:updatable-path="Update_mc"/>
+                <EntitySet Name="SAP__Currencies" EntityType="cds_zz_sd_00_plnsprmc.SAP__Currency" sap:content-version="1"/>
+                <EntitySet Name="SAP__UnitsOfMeasure" EntityType="cds_zz_sd_00_plnsprmc.SAP__UnitOfMeasure" sap:content-version="1"/>
+            </EntityContainer>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.cds_zz_sd_00_plnsprmc_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/Company_Code" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/Material" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/Plant" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/fiscal_period" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/fiscal_year" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/flag" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/plan_date" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/type" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.ZZ_CV_00_PLNSPRMCType/vendor" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Core.Immutable"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.cds_zz_sd_00_plnsprmc_Entities/ZZ_CV_00_PLNSPRMC" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>Delete_mc</PropertyPath>
+                                <PropertyPath>Update_mc</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.SortRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonSortableProperties">
+                            <Collection>
+                                <PropertyPath>Delete_mc</PropertyPath>
+                                <PropertyPath>Update_mc</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.cds_zz_sd_00_plnsprmc_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Org.OData.Capabilities.V1.BatchSupport">
+                    <Record Type="Org.OData.Capabilities.V1.BatchSupportType">
+                        <PropertyValue Property="ReferencesAcrossChangeSetsSupported" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__CodeList.CurrencyCodes">
+                    <Record>
+                        <PropertyValue Property="Url" String="./$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="SAP__Currencies"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__CodeList.UnitsOfMeasure">
+                    <Record>
+                        <PropertyValue Property="Url" String="./$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="SAP__UnitsOfMeasure"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.SAP__Currency/CurrencyCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="SAP__common.Text" Path="Text"/>
+                <Annotation Term="SAP__common.UnitSpecificScale" Path="DecimalPlaces"/>
+                <Annotation Term="SAP__CodeList.StandardCode" Path="ISOCode"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.SAP__UnitOfMeasure/UnitCode" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="SAP__common.Text" Path="Text"/>
+                <Annotation Term="SAP__common.UnitSpecificScale" Path="DecimalPlaces"/>
+                <Annotation Term="SAP__CodeList.StandardCode" Path="ISOCode"/>
+                <Annotation Term="SAP__CodeList.ExternalCode" Path="ExternalCode"/>
+            </Annotations>
+            <Annotations Target="cds_zz_sd_00_plnsprmc.SAP__UnitOfMeasure" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="SAP__core.AlternateKeys">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="Key">
+                                <Collection>
+                                    <Record>
+                                        <PropertyValue Property="Name" Path="ExternalCode"/>
+                                        <PropertyValue Property="Alias" String="ExternalCode"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <atom:link rel="self" href="https://s4.dev:443/sap/opu/odata/sap/ZZ_SB_00_PLNSPRMC/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="https://s4.dev:443/sap/opu/odata/sap/ZZ_SB_00_PLNSPRMC/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

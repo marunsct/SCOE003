@@ -92,6 +92,7 @@
                     "defaultBindingMode": "TwoWay",
                     "defaultCountMode": "Inline",
                     "refreshAfterChange": false,
+                    "useBatch": true,
                     "metadataUrlParams": {
                         "sap-value-list": "none"
                     }

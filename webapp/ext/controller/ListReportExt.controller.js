@@ -1,15 +1,34 @@
 sap.ui.define([
     "sap/ui/core/Fragment",
     "sap/m/MessageToast"
-    , "xlsx"
+    , "xlsx",
+    "sap/ui/core/mvc/ControllerExtension",
+    "sap/ui/model/Filter",
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/core/date/UI5Date"
 ],
     function (Fragment, MessageToast
-        , XLSX
+        , XLSX, ControllerExtension, Filter, JSONModel,UI5Date
     ) {
         "use strict";
-        return {
+        return    {
             // this variable will hold the data of excel file
+            
             excelSheetsData: [],
+            onInit : function(){
+                this.getView().byId('scoe003::sap.suite.ui.generic.template.ListReport.view.ListReport::ZZ_CV_00_PLNSPRMC--addEntry').setVisible(false);
+                var oModel = new JSONModel();
+                oModel.setData({
+                    valueDP2: UI5Date.getInstance(2014, 2, 26),
+                    valueDP4: UI5Date.getInstance(),
+                    valueDP5: UI5Date.getInstance(2015, 10, 23),
+                    valueDP6: UI5Date.getInstance(2016, 1, 16),
+                    valueDP7: UI5Date.getInstance(2015, 10, 23),
+                    valueDP10: UI5Date.getInstance(2015, 10, 23),
+                    valueDP11: UI5Date.getInstance(2015, 10, 23)
+                });
+                this.getView().setModel(oModel, 'data'); 
+            },
             onExcelUpload: function (oEvent) {
                 console.log(XLSX.version)
                 var oView = this.getView();
@@ -160,23 +179,23 @@ sap.ui.define([
                     var data = [];
                     let index = 1;
                     while (newArray.length > index) {
-                        
+
                         var obj = {};
                         var row = newArray[index].split(',');
-                        if (row.length == noOfCols ){
-                        for (var i = 0; i < row.length; i++) {
-                            obj[headerRow[i]] = row[i].trim();
+                        if (row.length == noOfCols) {
+                            for (var i = 0; i < row.length; i++) {
+                                obj[headerRow[i]] = row[i].trim();
+                            }
+                            data.push(obj);
                         }
-                        data.push(obj);
-                    }
                         index += 1;
                     }
                     var Len = data.length;
                     data.reverse();
 
-                    
+
                     that.excelSheetsData.push(data);
-                    
+
                 }
                 reader.readAsBinaryString(file);
             },
@@ -288,5 +307,7 @@ sap.ui.define([
                     });
                 });
             }
+            
+
         };
     });

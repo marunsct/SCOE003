@@ -17,7 +17,7 @@ sap.ui.define([
 
             excelSheetsData: [],
             onInit: function () {
-                this.getView().byId('scoe003::sap.suite.ui.generic.template.ListReport.view.ListReport::ZZ_CV_00_PLNSPRMC--addEntry').setVisible(false);
+                //this.getView().byId('scoe003::sap.suite.ui.generic.template.ListReport.view.ListReport::ZZ_CV_00_PLNSPRMC--addEntry').setVisible(false);
                 var oModel = new JSONModel();
                 oModel.setData({
                     fYear: "",
@@ -215,7 +215,7 @@ sap.ui.define([
 
                         var obj = {};
                         var row = newArray[index].split(',');
-                        if (row.length == noOfCols) {
+                        if (row.length >= noOfCols) {
                             for (var i = 0; i < row.length; i++) {
                                 obj[headerRow[i]] = row[i].trim();
                             }
@@ -244,168 +244,187 @@ sap.ui.define([
                 // creating odata payload object for Upload data entity
                 var payload = {};
                 this.rowCount = this.excelSheetsData[0].length;
-                this.currentCount = 0; this.payload = [];this.downloadData = [];
+                this.currentCount = 0; this.payload = []; this.downloadData = [];
                 this.excelSheetsData[0].forEach((value, index) => {
 
-                    let uploadData = this.getView().getModel('data').getData();
+                    try {
 
-                    let uploadFlag = (uploadData.Company_Code === value.Company_Code && uploadData.fYeargetFullYear() == value.fiscal_year && uploadData.fPeriod === value.fiscal_period) ? true : false;
 
-                    // setting the payload data
-                    payload = {
-                        "Company_Code": value["Company_Code"],
-                        "Plant": value["Plant"],
-                        "Material": value["Material"],
-                        "type": value["type"],
-                        "flag": value["flag"],
-                        "vendor": value["vendor"],
-                        "plan_date": value["plan_date"],
-                        "fiscal_year": value["fiscal_year"],
-                        "fiscal_period": value["fiscal_period"],
-                        "Period0": value["Period0"],
-                        "Period1": value["Period1"],
-                        "Period2": value["Period2"],
-                        "Period3": value["Period3"],
-                        "Period4": value["Period4"],
-                        "Period5": value["Period5"],
-                        "Period6": value["Period6"],
-                        "Period7": value["Period7"],
-                        "Period8": value["Period8"],
-                        "Period9": value["Period9"],
-                        "Period10": value["Period10"],
-                        "Period11": value["Period11"],
-                        "Period12": value["Period12"],
-                        "Period13": value["Period13"],
-                        "Period14": value["Period14"],
-                        "Period15": value["Period15"],
-                        "Period16": value["Period16"],
-                        "Period17": value["Period17"],
-                        "Period18": value["Period18"],
-                        "Update_Reason": value["Update_Reason"]
 
-                    };
-                    // setting excel file row number for identifying the exact row in case of error or success
-                    payload.ExcelRowNumber = (index + 1);
-                    payload.isLast = '';
-                    // calling the odata service
-                    
-                    this.downloadFlag = false;
+                        let uploadData = this.getView().getModel('data').getData();
 
-                    this.errorId = [];
-                    if (this.excelSheetsData[0].length === index + 1) {
-                        payload.isLast = 'X';
-                    }
-                    this.payload.push(payload);
-                    if (uploadFlag) {
-                        let createFlag = uploadData.create;
-                        if (createFlag) {
-                            oModel.create("/ZZ_CV_00_PLNSPRMC", payload, {
-                                success: (result) => {
+                        let uploadFlag = (uploadData.Company_Code === value.Company_Code && uploadData.fYear.getFullYear() == value.fiscal_year && uploadData.fPeriod == value.fiscal_period) ? true : false;
 
-                                    //this.onSuccess.call(this,result, payload, fnResolve)
+                        // setting the payload data
 
-                                    console.log(result);
-                                    this.currentCount += 1;
-                                    let oMessageManager = sap.ui.getCore().getMessageManager();
-                                    let oMessage = new sap.ui.core.message.Message({
-                                        //message: "Building Created with ID: " + result.BuildingId,
-                                        persistent: true, // create message as transition message
-                                        type: sap.ui.core.MessageType.Success
-                                    });
-                                    oMessageManager.addMessages(oMessage);
-                                    this.payload[this.currentCount - 1].Error = "";
-                                    this.downloadData.push(this.payload[this.currentCount - 1]);
+                        let aKeys = [];
+                        aKeys = Object.keys(value);
+                        let payload = {}
+                        for (let j = 0; j < aKeys.length; j++) {
+                            if (value[aKeys[j]] != "") {
+                                payload[aKeys[j]] = value[aKeys[j]]
+                            }
+                        }
 
-                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
-                                        this.onDownloadLog(this.downloadData);
-                                    }
+                        let payload1 = {
+                            "Company_Code": value["Company_Code"],
+                            "Plant": value["Plant"],
+                            "Material": value["Material"],
+                            "type": value["type"],
+                            "flag": value["flag"],
+                            "vendor": value["vendor"],
+                            "plan_date": value["plan_date"],
+                            "fiscal_year": value["fiscal_year"],
+                            "fiscal_period": value["fiscal_period"],
+                            "Period0": value["Period0"],
+                            "Period1": value["Period1"],
+                            "Period2": value["Period2"],
+                            "Period3": value["Period3"],
+                            "Period4": value["Period4"],
+                            "Period5": value["Period5"],
+                            "Period6": value["Period6"],
+                            "Period7": value["Period7"],
+                            "Period8": value["Period8"],
+                            "Period9": value["Period9"],
+                            "Period10": value["Period10"],
+                            "Period11": value["Period11"],
+                            "Period12": value["Period12"],
+                            "Period13": value["Period13"],
+                            "Period14": value["Period14"],
+                            "Period15": value["Period15"],
+                            "Period16": value["Period16"],
+                            "Period17": value["Period17"],
+                            "Period18": value["Period18"],
+                            "Update_Reason": value["Update_Reason"]
 
-                                    fnResolve();
+                        };
+                        // setting excel file row number for identifying the exact row in case of error or success
+                        payload.ExcelRowNumber = (index + 1);
+                        payload.isLast = '';
+                        // calling the odata service
 
-                                },
-                                error: (error) => {
-                                    // this.onError.call(this, error, payload, fnReject) 
-                                    this.downloadFlag = true;
-                                    this.currentCount += 1;
-                                    console.log(error);
-                                    console.log(JSON.parse(error.responseText).error.message.value);
+                        this.downloadFlag = false;
 
-                                    let errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
-                                    this.payload[this.currentCount - 1].Error = "";
-                                    for (let i = 0; i < errorArr.length; i++) {
-                                        if (!this.errorId.includes(errorArr[i].id)) {
-                                            this.errorId.push(errorArr[i].id);
-                                            this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
+                        this.errorId = [];
+                        if (this.excelSheetsData[0].length === index + 1) {
+                            payload.isLast = 'X';
+                        }
+                        this.payload.push(payload);
+                        if (uploadFlag) {
+                            let createFlag = uploadData.create;
+                            if (createFlag) {
+                                                       
+                                oModel.create("/ZZ_CV_00_PLNSPRMC", payload, {
+                                    success: (result) => {
+
+                                        //this.onSuccess.call(this,result, payload, fnResolve)
+
+                                        console.log(result);
+                                        this.currentCount += 1;
+                                        let oMessageManager = sap.ui.getCore().getMessageManager();
+                                        let oMessage = new sap.ui.core.message.Message({
+                                            //message: "Building Created with ID: " + result.BuildingId,
+                                            persistent: true, // create message as transition message
+                                            type: sap.ui.core.MessageType.Success
+                                        });
+                                        oMessageManager.addMessages(oMessage);
+                                        this.payload[this.currentCount - 1].Error = "";
+                                        this.downloadData.push(this.payload[this.currentCount - 1]);
+
+                                        if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                            this.onDownloadLog(this.downloadData);
                                         }
-                                    }
-                                    this.downloadData.push(this.payload[this.currentCount - 1]);
-                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
-                                        this.onDownloadLog(this.downloadData);
-                                    }
 
-                                    fnReject();
-                                }
-                            });
+                                        fnResolve();
+
+                                    },
+                                    error: (error) => {
+                                        // this.onError.call(this, error, payload, fnReject) 
+                                        this.downloadFlag = true;
+                                        this.currentCount += 1;
+                                        console.log(error);
+                                        console.log(JSON.parse(error.responseText).error.message.value);
+
+                                        let errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
+                                        this.payload[this.currentCount - 1].Error = "";
+                                        for (let i = 0; i < errorArr.length; i++) {
+                                            if (!this.errorId.includes(errorArr[i].id)) {
+                                                this.errorId.push(errorArr[i].id);
+                                                this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
+                                            }
+                                        }
+                                        this.downloadData.push(this.payload[this.currentCount - 1]);
+                                        if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                            this.onDownloadLog(this.downloadData);
+                                        }
+
+                                        fnReject();
+                                    }
+                                });
+                            } else {
+                                let uUrl = "/ZZ_CV_00_PLNSPRMC(Company_Code='" + payload.Company_Code + "',Plant='" + payload.Plant + "',Material='" + payload.Material + "',type='" + payload.type + "',flag='" + payload.flag + "',vendor='" + payload.vendor + "',fiscal_year='" + payload.fiscal_year + "',fiscal_period='" + payload.fiscal_period + "')"
+                                oModel.update(uUrl, payload, {
+                                    success: (result) => {
+
+                                        //this.onSuccess.call(this,result, payload, fnResolve)
+
+                                        console.log(result);
+                                        this.currentCount += 1;
+                                        let oMessageManager = sap.ui.getCore().getMessageManager();
+                                        let oMessage = new sap.ui.core.message.Message({
+                                            //message: "Building Created with ID: " + result.BuildingId,
+                                            persistent: true, // create message as transition message
+                                            type: sap.ui.core.MessageType.Success
+                                        });
+                                        oMessageManager.addMessages(oMessage);
+                                        this.payload[this.currentCount - 1].Error = "";
+                                        this.downloadData.push(this.payload[this.currentCount - 1]);
+
+                                        if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                            this.onDownloadLog(this.downloadData);
+                                        }
+
+                                        fnResolve();
+
+                                    },
+                                    error: (error) => {
+                                        // this.onError.call(this, error, payload, fnReject) 
+                                        this.downloadFlag = true;
+                                        this.currentCount += 1;
+                                        console.log(error);
+                                        console.log(JSON.parse(error.responseText).error.message.value);
+
+                                        let errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
+                                        this.payload[this.currentCount - 1].Error = "";
+                                        for (let i = 0; i < errorArr.length; i++) {
+                                            if (!this.errorId.includes(errorArr[i].id)) {
+                                                this.errorId.push(errorArr[i].id);
+                                                this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
+                                            }
+                                        }
+                                        this.downloadData.push(this.payload[this.currentCount - 1]);
+                                        if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                            this.onDownloadLog(this.downloadData);
+                                        }
+
+                                        fnReject();
+                                    }
+                                });
+                            }
                         } else {
-                            oModel.update("/ZZ_CV_00_PLNSPRMC", payload, {
-                                success: (result) => {
-
-                                    //this.onSuccess.call(this,result, payload, fnResolve)
-
-                                    console.log(result);
-                                    this.currentCount += 1;
-                                    let oMessageManager = sap.ui.getCore().getMessageManager();
-                                    let oMessage = new sap.ui.core.message.Message({
-                                        //message: "Building Created with ID: " + result.BuildingId,
-                                        persistent: true, // create message as transition message
-                                        type: sap.ui.core.MessageType.Success
-                                    });
-                                    oMessageManager.addMessages(oMessage);
-                                    this.payload[this.currentCount - 1].Error = "";
-                                    this.downloadData.push(this.payload[this.currentCount - 1]);
-
-                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
-                                        this.onDownloadLog(this.downloadData);
-                                    }
-
-                                    fnResolve();
-
-                                },
-                                error: (error) => {
-                                    // this.onError.call(this, error, payload, fnReject) 
-                                    this.downloadFlag = true;
-                                    this.currentCount += 1;
-                                    console.log(error);
-                                    console.log(JSON.parse(error.responseText).error.message.value);
-
-                                    let errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
-                                    this.payload[this.currentCount - 1].Error = "";
-                                    for (let i = 0; i < errorArr.length; i++) {
-                                        if (!this.errorId.includes(errorArr[i].id)) {
-                                            this.errorId.push(errorArr[i].id);
-                                            this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
-                                        }
-                                    }
-                                    this.downloadData.push(this.payload[this.currentCount - 1]);
-                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
-                                        this.onDownloadLog(this.downloadData);
-                                    }
-
-                                    fnReject();
-                                }
-                            });
+                            this.downloadFlag = true;
+                            this.currentCount += 1;
+                            this.payload[this.currentCount - 1].Error = "The Upload Screen Input doesnot matched the uploaded file data";
+                            this.downloadData.push(this.payload[this.currentCount - 1]);
+                            if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                this.onDownloadLog(this.downloadData);
+                            }
+                            fnReject();
                         }
-                    } else {
-                        this.downloadFlag = true;
-                        this.currentCount += 1;
-                        this.payload[this.currentCount - 1].Error = "The Upload Screen Input doesnot matched the uploaded file data";
-                        this.downloadData.push(this.payload[this.currentCount - 1]);
-                        if (this.rowCount === this.currentCount && this.downloadFlag) {
-                            this.onDownloadLog(this.downloadData);
-                        }
+                    } catch (error) {
+                        console.log(error);
                         fnReject();
                     }
-
 
                 });
             }

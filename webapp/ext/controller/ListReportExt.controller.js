@@ -64,52 +64,70 @@ sap.ui.define([
 
                 oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
             },
-            onUploadSet: function (oEvent) {
+            onUploadSet: async function (oEvent) {
                 /*console.log("Upload Button Clicked!!!")
                  TODO:Call to OData */
                 // checking if excel file contains data or not
-                let oData = this.getView().getModel('data').getData();
-                let errIndex = 1;
-                let errMsg = "Resolve the following error before proceding. ";
-                if (oData.Company_Code == "") {
-                    errMsg = errMsg + "Enter valid Company Code."
-                    MessageToast.show(errMsg);
-                    return;
+                try {
+
+
+                    let oData = this.getView().getModel('data').getData();
+                    let errIndex = 1;
+                    let errMsg = "Resolve the following error before proceding. ";
+                    if (oData.Company_Code == "") {
+                        errMsg = errMsg + "Enter valid Company Code."
+                        MessageToast.show(errMsg);
+                        return;
+                    } else {
+                        let checUrl = "/I_CompanyCodeVH";
+                        //?sap-client=200&&search-focus=CompanyCode&search=" + oData.Company_Code;
+                        let aFilter = [];
+                        aFilter.push(new Filter("CompanyCode", FilterOperator.StartsWith, oData.Company_Code));
+                        let checkCompany = await this.asyncOdata(checUrl, aFilter);
+                        if (!checkCompany) {
+                            errMsg = errMsg + "Company Code does not exists."
+                            MessageToast.show(errMsg);
+                            return;
+                        }
+                    }
+                    if (oData.fYear == "") {
+                        errMsg = errMsg + "Enter valid Fiscal year. "
+                        MessageToast.show(errMsg);
+                        return;
+                    }
+                    if (oData.fPeriod > 12 || oData.fPeriod === 0) {
+                        errMsg = errMsg + "Enter valid Fiscal period."
+                        MessageToast.show(errMsg);
+                        return;
+                    }
+                    if (!this.excelSheetsData.length) {
+                        errMsg = errMsg + "Select file to Upload. "
+                        MessageToast.show(errMsg);
+                        return;
+
+                    }
+
+
+                    var that = this;
+                    var oSource = oEvent.getSource();
+
+                    // creating a promise as the extension api accepts odata call in form of promise only
+                    var fnAddMessage = function () {
+                        return new Promise((fnResolve, fnReject) => {
+                            that.callOdata(fnResolve, fnReject);
+                        });
+                    };
+
+                    var mParameters = {
+                        sActionLabel: oSource.getText() // or "Your custom text" 
+                    };
+                    // calling the oData service using extension api
+                    this.extensionAPI.securedExecution(fnAddMessage, mParameters);
+
+                    this.pDialog.close();
+                } catch (error) {
+                    throw (error);
                 }
-                if (oData.fYear == "") {
-                    errMsg = errMsg + "Enter valid Fiscal year. "
-                    MessageToast.show(errMsg);
-                    return;
-                }
-                if (oData.fPeriod > 12 || oData.fPeriod === 0) {
-                    errMsg = errMsg + "Enter valid Fiscal period."
-                    MessageToast.show(errMsg);
-                    return;
-                }
-                if (!this.excelSheetsData.length) {
-                    errMsg = errMsg + "Select file to Upload. "
-                    MessageToast.show(errMsg);
-                    return;
-
-                }
-
-                var that = this;
-                var oSource = oEvent.getSource();
-
-                // creating a promise as the extension api accepts odata call in form of promise only
-                var fnAddMessage = function () {
-                    return new Promise((fnResolve, fnReject) => {
-                        that.callOdata(fnResolve, fnReject);
-                    });
-                };
-
-                var mParameters = {
-                    sActionLabel: oSource.getText() // or "Your custom text" 
-                };
-                // calling the oData service using extension api
-                this.extensionAPI.securedExecution(fnAddMessage, mParameters);
-
-                this.pDialog.close();
             },
             onTempDownload: function (oEvent) {
                 /*console.log("Template Download Button Clicked!!!")
@@ -313,7 +331,7 @@ sap.ui.define([
                         if (uploadFlag) {
                             let createFlag = uploadData.create;
                             if (createFlag) {
-                                                       
+
                                 oModel.create("/ZZ_CV_00_PLNSPRMC", payload, {
                                     success: (result) => {
 
@@ -426,6 +444,36 @@ sap.ui.define([
                         fnReject();
                     }
 
+                });
+            },
+
+            asyncOdata: async function (sUrl, aFilter) {
+                let oDataModel = this.getView().getModel();
+                return new Promise(function (resolve, reject) {
+                    oDataModel.read(sUrl,
+                        {
+                            async: true,
+                            urlParameters: {
+                                "$top": 125,
+                                "$skip": 0
+                            },
+                            filters: aFilter,
+                            success: function (sData, sResult) {
+                                console.log(sData, sResult);
+                                if (sData.results.length > 0) {
+                                    resolve(true);
+                                } else {
+                                    resolve(false);
+                                }
+
+                            }.bind(this),
+                            error: function (sData, sResult) {
+                                console.log(sData);
+                                //this.oGlobalBusyDialog.close();
+                                this.byId("table0").setBusy(false);
+                                reject(false);
+                            }
+                        });
                 });
             }
 

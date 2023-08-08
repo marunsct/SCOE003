@@ -1,18 +1,27 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:upload="sap.m.upload" id="excel_upload">
-	<Dialog id="uploadDialogSet" title="Excel Upload">
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:upload="sap.m.upload" xmlns:smartField="sap.ui.comp.smartfield" id="excel_upload">
+	<Dialog id="uploadDialogSet" title="Upload">
         <content>
-            <sap.ui.layout.form:Form xmlns:sap.ui.layout.form="sap.ui.layout.form" editable="true" id="form0">
+            <sap.ui.layout.form:Form xmlns:sap.ui.layout.form="sap.ui.layout.form" editable="true" id="formInput">
                 <sap.ui.layout.form:formContainers>
                     <sap.ui.layout.form:FormContainer id="container0">
                         <sap.ui.layout.form:formElements>
                             <sap.ui.layout.form:FormElement label="Company Code" id="element0">
                                 <sap.ui.layout.form:fields>
-                                    <Input width="100%" id="input0"/>
+                                    <Input width="100%" id="input0" value="{data>/Company_Code}" showSuggestion="true" showValueHelp="false" suggest=".onSuggest" suggestionItems="{/I_CompanyCodeVH}">
+                                        <suggestionItems>
+                                            <core:Item id="suggest1" text="{CompanyCode}"/>
+                                        </suggestionItems>
+                                    </Input>
                                 </sap.ui.layout.form:fields>
                             </sap.ui.layout.form:FormElement>
                             <sap.ui.layout.form:FormElement label="Fiscal Year" id="element0_1691128672249">
                                 <sap.ui.layout.form:fields>
-                                    	<DatePicker id="DP11" value="{       'path': 'data>/valueDP11',       'type': 'sap.ui.model.type.Date',       'formatOptions': {        'pattern': 'yyyy'       }      }" change="handleChange" class="sapUiSmallMarginBottom" valueFormat="YYYY" displayFormat="YYYY"/>
+                                    	<DatePicker id="DP11" value="{ 'path': 'data>/fYear', 'type': 'sap.ui.model.type.Date','formatOptions': { 'pattern': 'yyyy' } }" change="handleChange" class="sapUiSmallMarginBottom"/>
+                                </sap.ui.layout.form:fields>
+                            </sap.ui.layout.form:FormElement>
+                            <sap.ui.layout.form:FormElement label="Period" id="element0_1691379374370">
+                                <sap.ui.layout.form:fields>
+                                    <Input width="100%" id="input0_1691379374369" type="Number" value="{ 'path': 'data>/fPeriod',  type : 'sap.ui.model.type.Integer'}"/>
                                 </sap.ui.layout.form:fields>
                             </sap.ui.layout.form:FormElement>
                         </sap.ui.layout.form:formElements>
@@ -21,7 +30,17 @@
                 <sap.ui.layout.form:layout>
                     <sap.ui.layout.form:ResponsiveGridLayout id="layout0"/>
                 </sap.ui.layout.form:layout></sap.ui.layout.form:Form>
-                            <upload:UploadSet uploadEnabled="true" id="uploadSet" items="{path: '/', templateShareable: false}" fileTypes="xlsx, xls,csv" maxFileNameLength="200" beforeUploadStarts="onBeforeUploadStart" uploadCompleted="onUploadSetComplete" afterItemRemoved="onItemRemoved" terminationEnabled="true">
+            <HBox xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:upload="sap.m.upload" width="100%" id="hbox0">
+                <items>
+                    <CheckBox xmlns="sap.m" text="Shipment Planning" selected="{data>/shipment}" id="box2"/>
+                    <CheckBox xmlns="sap.m" text="Raw Material Consumption" selected="{data>/rawMaterial}" id="box3"/>
+                </items>
+            </HBox>
+            <RadioButtonGroup id="rbg1" columns="3" width="100%" class="sapUiMediumMarginTop">
+                <RadioButton id="RB1_1" text="Create" selected="{data>/create}"/>
+                <RadioButton id="RB1_2" text="Update"/>
+		    </RadioButtonGroup>
+            <upload:UploadSet uploadEnabled="true" id="uploadSet" items="{path: '/', templateShareable: false}" fileTypes="xlsx, xls,csv" maxFileNameLength="200" beforeUploadStarts="onBeforeUploadStart" uploadCompleted="onUploadSetComplete" afterItemRemoved="onItemRemoved" terminationEnabled="true">
                 <upload:UploadSetItem id="up" visibleRemove="true" visibleEdit="false" fileName="{name}" url="/upload">
                     <upload:attributes>
                         <ObjectAttribute id="uby" title="Uploaded by" text="{user}" active="false"/>

@@ -5,29 +5,29 @@ sap.ui.define([
     "sap/ui/core/mvc/ControllerExtension",
     "sap/ui/model/Filter",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/core/date/UI5Date"
+    "sap/ui/core/date/UI5Date",
+    "sap/ui/model/FilterOperator",
 ],
     function (Fragment, MessageToast
-        , XLSX, ControllerExtension, Filter, JSONModel,UI5Date
+        , XLSX, ControllerExtension, Filter, JSONModel, UI5Date, FilterOperator
     ) {
         "use strict";
-        return    {
+        return {
             // this variable will hold the data of excel file
-            
+
             excelSheetsData: [],
-            onInit : function(){
+            onInit: function () {
                 this.getView().byId('scoe003::sap.suite.ui.generic.template.ListReport.view.ListReport::ZZ_CV_00_PLNSPRMC--addEntry').setVisible(false);
                 var oModel = new JSONModel();
                 oModel.setData({
-                    valueDP2: UI5Date.getInstance(2014, 2, 26),
-                    valueDP4: UI5Date.getInstance(),
-                    valueDP5: UI5Date.getInstance(2015, 10, 23),
-                    valueDP6: UI5Date.getInstance(2016, 1, 16),
-                    valueDP7: UI5Date.getInstance(2015, 10, 23),
-                    valueDP10: UI5Date.getInstance(2015, 10, 23),
-                    valueDP11: UI5Date.getInstance(2015, 10, 23)
+                    fYear: "",
+                    fPeriod: 0,
+                    Company_Code: "",
+                    shipment: false,
+                    rawMaterial: false,
+                    create: true
                 });
-                this.getView().setModel(oModel, 'data'); 
+                this.getView().setModel(oModel, 'data');
             },
             onExcelUpload: function (oEvent) {
                 console.log(XLSX.version)
@@ -39,6 +39,10 @@ sap.ui.define([
                         type: "XML",
                         controller: this
                     }).then((oDialog) => {
+                        let dataModel = this.getView().getModel('data');
+                        let defModel = this.getView().getModel()
+                        Fragment.byId("excel_upload", "uploadDialogSet").setModel(dataModel, 'data');
+                        Fragment.byId("excel_upload", "uploadDialogSet").setModel(defModel);
                         var oFileUploader = Fragment.byId("excel_upload", "uploadSet");
                         oFileUploader.removeAllItems();
                         this.pDialog = oDialog;
@@ -51,13 +55,42 @@ sap.ui.define([
                     this.pDialog.open();
                 }
             },
+            onSuggest: function (oEvent) {
+                var sTerm = oEvent.getParameter("suggestValue");
+                var aFilters = [];
+                if (sTerm) {
+                    aFilters.push(new Filter("CompanyCode", FilterOperator.StartsWith, sTerm));
+                }
+
+                oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
+            },
             onUploadSet: function (oEvent) {
                 /*console.log("Upload Button Clicked!!!")
                  TODO:Call to OData */
                 // checking if excel file contains data or not
-                if (!this.excelSheetsData.length) {
-                    MessageToast.show("Select file to Upload");
+                let oData = this.getView().getModel('data').getData();
+                let errIndex = 1;
+                let errMsg = "Resolve the following error before proceding. ";
+                if (oData.Company_Code == "") {
+                    errMsg = errMsg + "Enter valid Company Code."
+                    MessageToast.show(errMsg);
                     return;
+                }
+                if (oData.fYear == "") {
+                    errMsg = errMsg + "Enter valid Fiscal year. "
+                    MessageToast.show(errMsg);
+                    return;
+                }
+                if (oData.fPeriod > 12 || oData.fPeriod === 0) {
+                    errMsg = errMsg + "Enter valid Fiscal period."
+                    MessageToast.show(errMsg);
+                    return;
+                }
+                if (!this.excelSheetsData.length) {
+                    errMsg = errMsg + "Select file to Upload. "
+                    MessageToast.show(errMsg);
+                    return;
+
                 }
 
                 var that = this;
@@ -211,8 +244,13 @@ sap.ui.define([
                 // creating odata payload object for Upload data entity
                 var payload = {};
                 this.rowCount = this.excelSheetsData[0].length;
-                this.currentCount = 0; this.payload = [];
+                this.currentCount = 0; this.payload = [];this.downloadData = [];
                 this.excelSheetsData[0].forEach((value, index) => {
+
+                    let uploadData = this.getView().getModel('data').getData();
+
+                    let uploadFlag = (uploadData.Company_Code === value.Company_Code && uploadData.fYeargetFullYear() == value.fiscal_year && uploadData.fPeriod === value.fiscal_period) ? true : false;
+
                     // setting the payload data
                     payload = {
                         "Company_Code": value["Company_Code"],
@@ -250,7 +288,7 @@ sap.ui.define([
                     payload.ExcelRowNumber = (index + 1);
                     payload.isLast = '';
                     // calling the odata service
-                    this.downloadData = [];
+                    
                     this.downloadFlag = false;
 
                     this.errorId = [];
@@ -258,56 +296,120 @@ sap.ui.define([
                         payload.isLast = 'X';
                     }
                     this.payload.push(payload);
-                    oModel.create("/ZZ_CV_00_PLNSPRMC", payload, {
-                        success: (result) => {
+                    if (uploadFlag) {
+                        let createFlag = uploadData.create;
+                        if (createFlag) {
+                            oModel.create("/ZZ_CV_00_PLNSPRMC", payload, {
+                                success: (result) => {
 
-                            //this.onSuccess.call(this,result, payload, fnResolve)
+                                    //this.onSuccess.call(this,result, payload, fnResolve)
 
-                            console.log(result);
-                            this.currentCount += 1;
-                            var oMessageManager = sap.ui.getCore().getMessageManager();
-                            var oMessage = new sap.ui.core.message.Message({
-                                //message: "Building Created with ID: " + result.BuildingId,
-                                persistent: true, // create message as transition message
-                                type: sap.ui.core.MessageType.Success
-                            });
-                            oMessageManager.addMessages(oMessage);
-                            this.payload[this.currentCount - 1].Error = "";
-                            this.downloadData.push(this.payload[this.currentCount - 1]);
+                                    console.log(result);
+                                    this.currentCount += 1;
+                                    let oMessageManager = sap.ui.getCore().getMessageManager();
+                                    let oMessage = new sap.ui.core.message.Message({
+                                        //message: "Building Created with ID: " + result.BuildingId,
+                                        persistent: true, // create message as transition message
+                                        type: sap.ui.core.MessageType.Success
+                                    });
+                                    oMessageManager.addMessages(oMessage);
+                                    this.payload[this.currentCount - 1].Error = "";
+                                    this.downloadData.push(this.payload[this.currentCount - 1]);
 
-                            if (this.rowCount === this.currentCount && this.downloadFlag) {
-                                this.onDownloadLog(this.downloadData);
-                            }
+                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                        this.onDownloadLog(this.downloadData);
+                                    }
 
-                            fnResolve();
+                                    fnResolve();
 
-                        },
-                        error: (error) => {
-                            // this.onError.call(this, error, payload, fnReject) 
-                            this.downloadFlag = true;
-                            this.currentCount += 1;
-                            console.log(error);
-                            console.log(JSON.parse(error.responseText).error.message.value);
+                                },
+                                error: (error) => {
+                                    // this.onError.call(this, error, payload, fnReject) 
+                                    this.downloadFlag = true;
+                                    this.currentCount += 1;
+                                    console.log(error);
+                                    console.log(JSON.parse(error.responseText).error.message.value);
 
-                            var errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
-                            this.payload[this.currentCount - 1].Error = "";
-                            for (var i = 0; i < errorArr.length; i++) {
-                                if (!this.errorId.includes(errorArr[i].id)) {
-                                    this.errorId.push(errorArr[i].id);
-                                    this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
+                                    let errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
+                                    this.payload[this.currentCount - 1].Error = "";
+                                    for (let i = 0; i < errorArr.length; i++) {
+                                        if (!this.errorId.includes(errorArr[i].id)) {
+                                            this.errorId.push(errorArr[i].id);
+                                            this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
+                                        }
+                                    }
+                                    this.downloadData.push(this.payload[this.currentCount - 1]);
+                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                        this.onDownloadLog(this.downloadData);
+                                    }
+
+                                    fnReject();
                                 }
-                            }
-                            this.downloadData.push(this.payload[this.currentCount - 1]);
-                            if (this.rowCount === this.currentCount && this.downloadFlag) {
-                                this.onDownloadLog(this.downloadData);
-                            }
+                            });
+                        } else {
+                            oModel.update("/ZZ_CV_00_PLNSPRMC", payload, {
+                                success: (result) => {
 
-                            fnReject();
+                                    //this.onSuccess.call(this,result, payload, fnResolve)
+
+                                    console.log(result);
+                                    this.currentCount += 1;
+                                    let oMessageManager = sap.ui.getCore().getMessageManager();
+                                    let oMessage = new sap.ui.core.message.Message({
+                                        //message: "Building Created with ID: " + result.BuildingId,
+                                        persistent: true, // create message as transition message
+                                        type: sap.ui.core.MessageType.Success
+                                    });
+                                    oMessageManager.addMessages(oMessage);
+                                    this.payload[this.currentCount - 1].Error = "";
+                                    this.downloadData.push(this.payload[this.currentCount - 1]);
+
+                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                        this.onDownloadLog(this.downloadData);
+                                    }
+
+                                    fnResolve();
+
+                                },
+                                error: (error) => {
+                                    // this.onError.call(this, error, payload, fnReject) 
+                                    this.downloadFlag = true;
+                                    this.currentCount += 1;
+                                    console.log(error);
+                                    console.log(JSON.parse(error.responseText).error.message.value);
+
+                                    let errorArr = sap.ui.getCore().getMessageManager().getMessageModel().oData;
+                                    this.payload[this.currentCount - 1].Error = "";
+                                    for (let i = 0; i < errorArr.length; i++) {
+                                        if (!this.errorId.includes(errorArr[i].id)) {
+                                            this.errorId.push(errorArr[i].id);
+                                            this.payload[this.currentCount - 1].Error = this.payload[this.currentCount - 1].Error + errorArr[i].message + ". ";
+                                        }
+                                    }
+                                    this.downloadData.push(this.payload[this.currentCount - 1]);
+                                    if (this.rowCount === this.currentCount && this.downloadFlag) {
+                                        this.onDownloadLog(this.downloadData);
+                                    }
+
+                                    fnReject();
+                                }
+                            });
                         }
-                    });
+                    } else {
+                        this.downloadFlag = true;
+                        this.currentCount += 1;
+                        this.payload[this.currentCount - 1].Error = "The Upload Screen Input doesnot matched the uploaded file data";
+                        this.downloadData.push(this.payload[this.currentCount - 1]);
+                        if (this.rowCount === this.currentCount && this.downloadFlag) {
+                            this.onDownloadLog(this.downloadData);
+                        }
+                        fnReject();
+                    }
+
+
                 });
             }
-            
+
 
         };
     });

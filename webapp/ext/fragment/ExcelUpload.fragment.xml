@@ -7,7 +7,7 @@
                         <sap.ui.layout.form:formElements>
                             <sap.ui.layout.form:FormElement label="Company Code" id="element0">
                                 <sap.ui.layout.form:fields>
-                                    <Input width="100%" id="input0" value="{data>/Company_Code}" showSuggestion="true" showValueHelp="false" suggest=".onSuggest" suggestionItems="{/I_CompanyCodeVH}">
+                                    <Input width="100%" id="input0" value="{data>/Company_Code}" showSuggestion="true" showValueHelp="false" suggest=".onSuggest" suggestionItems="{/I_CompanyCodeVH}" required="true">
                                         <suggestionItems>
                                             <core:Item id="suggest1" text="{CompanyCode}"/>
                                         </suggestionItems>
@@ -16,12 +16,12 @@
                             </sap.ui.layout.form:FormElement>
                             <sap.ui.layout.form:FormElement label="Fiscal Year" id="element0_1691128672249">
                                 <sap.ui.layout.form:fields>
-                                    	<DatePicker id="DP11" value="{ 'path': 'data>/fYear', 'type': 'sap.ui.model.type.Date','formatOptions': { 'pattern': 'yyyy' } }" change="handleChange" class="sapUiSmallMarginBottom"/>
+                                    	<DatePicker id="DP11" value="{ 'path': 'data>/fYear', 'type': 'sap.ui.model.type.Date','formatOptions': { 'pattern': 'yyyy' } }" change="handleChange" class="sapUiSmallMarginBottom" required="true"/>
                                 </sap.ui.layout.form:fields>
                             </sap.ui.layout.form:FormElement>
                             <sap.ui.layout.form:FormElement label="Period" id="element0_1691379374370">
                                 <sap.ui.layout.form:fields>
-                                    <Input width="100%" id="input0_1691379374369" type="Number" value="{ 'path': 'data>/fPeriod',  type : 'sap.ui.model.type.Integer'}"/>
+                                    <Input width="100%" id="input0_1691379374369" type="Number" value="{ 'path': 'data>/fPeriod',  type : 'sap.ui.model.type.Integer'}" required="true"/>
                                 </sap.ui.layout.form:fields>
                             </sap.ui.layout.form:FormElement>
                         </sap.ui.layout.form:formElements>

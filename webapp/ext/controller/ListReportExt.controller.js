@@ -82,7 +82,7 @@ sap.ui.define([
                         let checUrl = "/I_CompanyCodeVH";
                         //?sap-client=200&&search-focus=CompanyCode&search=" + oData.Company_Code;
                         let aFilter = [];
-                        aFilter.push(new Filter("CompanyCode", FilterOperator.StartsWith, oData.Company_Code));
+                        aFilter.push(new Filter("CompanyCode", FilterOperator.EQ, oData.Company_Code));
                         let checkCompany = await this.asyncOdata(checUrl, aFilter);
                         if (!checkCompany) {
                             errMsg = errMsg + "Company Code does not exists."
